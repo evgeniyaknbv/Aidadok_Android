@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Айдадок</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_choose_symptom">ChooseSymptomActivity</string>
+    <string name="title_activity_call_doctor">CallDoctorActivity</string>
+    <string name="title_activity_end_of_symptom">EndOfSymptomActivity</string>
+</resources>

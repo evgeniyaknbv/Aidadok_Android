@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "624586977468",
+    "firebase_url": "https://diadoc-8f390.firebaseio.com",
+    "project_id": "diadoc-8f390",
+    "storage_bucket": "diadoc-8f390.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624586977468:android:28ba26abb4d2e829",
+        "android_client_info": {
+          "package_name": "danilbiktashev.ajdadok"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624586977468-vsp4up0jagtlblkafm7sbne6mr6424vi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "danilbiktashev.ajdadok",
+            "certificate_hash": "8e2c13ff48149ed18f8bdca5fd0aab8bd0f557b0"
+          }
+        },
+        {
+          "client_id": "624586977468-6unnup29mntt9au34nmsl95hbha4o3e3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkdQ21BEAjxKtZvaDY9HZV9nqMxIVuM50"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624586977468-mu7677u54p3ekotprvl8nntjimduq4ac.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "diadoc.helpfulbook"
+              }
+            },
+            {
+              "client_id": "624586977468-6unnup29mntt9au34nmsl95hbha4o3e3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624586977468:android:b1f0c8580eb46f54",
+        "android_client_info": {
+          "package_name": "danilbiktashev.aidadok"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624586977468-c247jfvnujcrvnb8bfc1jfbkcb2ejvoh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "danilbiktashev.aidadok",
+            "certificate_hash": "8e2c13ff48149ed18f8bdca5fd0aab8bd0f557b0"
+          }
+        },
+        {
+          "client_id": "624586977468-6unnup29mntt9au34nmsl95hbha4o3e3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkdQ21BEAjxKtZvaDY9HZV9nqMxIVuM50"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624586977468-mu7677u54p3ekotprvl8nntjimduq4ac.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "diadoc.helpfulbook"
+              }
+            },
+            {
+              "client_id": "624586977468-6unnup29mntt9au34nmsl95hbha4o3e3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
