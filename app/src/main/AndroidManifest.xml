@@ -12,20 +12,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--splash screen-->
+        <activity
+            android:name=".architecture.presentation_layer.splash_screen.SplashScreen"
+            android:theme="@style/SplashTheme" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+        <!--логин или авторизация-->
+        <activity
+            android:name=".architecture.presentation_layer.authentication.LoginActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ChooseSymptomActivity"
             android:label="@string/title_activity_choose_symptom"

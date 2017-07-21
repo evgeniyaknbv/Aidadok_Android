@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:theme="@style/LoginTheme">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/emblema"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"/>
+
+    <Button
+        android:id="@+id/enter_button"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/darkBackground"
+        android:text="@string/enter"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/icon"/>
+
+    <Button
+        android:id="@+id/registration_button"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/darkBackground"
+        android:text="@string/registration"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/enter_button"/>
+
+    <TextView
+        android:id="@+id/continue_text"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/darkBackground"
+        android:text="Далее > "
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:textSize="18dp"/>
+
+
+
+</RelativeLayout>

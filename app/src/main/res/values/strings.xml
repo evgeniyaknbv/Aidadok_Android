@@ -9,4 +9,9 @@
     <string name="title_activity_choose_symptom">ChooseSymptomActivity</string>
     <string name="title_activity_call_doctor">CallDoctorActivity</string>
     <string name="title_activity_end_of_symptom">EndOfSymptomActivity</string>
+    <string name="enter">ВОЙТИ</string>
+    <string name="enter1">ВХОД</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="registration">РЕГИСТРАЦИЯ</string>
 </resources>

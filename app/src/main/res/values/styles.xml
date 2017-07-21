@@ -6,6 +6,20 @@
         <item name="colorPrimary">@color/darkBackground</item>
         <item name="colorPrimaryDark">@color/darkBackground</item>
         <item name="colorAccent">@color/darkBackground</item>
+        <item name="titleTextColor">@android:color/white</item>
+        <item name="windowActionBar">true</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/aida</item>
+    </style>
+
+    <style name="LoginTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimaryDark">@android:color/white</item>
+    </style>
+
+    <style name="MyActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@android:color/white</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
