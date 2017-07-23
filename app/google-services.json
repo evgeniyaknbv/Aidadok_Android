@@ -66,6 +66,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "624586977468-5kfrei9smfmokmtjn6ee3qkp67a65p1v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "danilbiktashev.aidadok",
+            "certificate_hash": "7472fa6e733e0fc79823c9a5e4592361273269bf"
+          }
+        },
+        {
           "client_id": "624586977468-c247jfvnujcrvnb8bfc1jfbkcb2ejvoh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

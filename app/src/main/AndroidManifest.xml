@@ -32,11 +32,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+
         <activity
-            android:name=".MainActivity"
+            android:name=".architecture.presentation_layer.main_content.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <activity
             android:name=".ResultActivity"
             android:label="@string/title_activity_result"
