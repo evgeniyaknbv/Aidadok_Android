@@ -3,6 +3,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,10 +22,17 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
+
+import java.util.concurrent.TimeUnit;
 
 import danilbiktashev.aidadok.R;
 import danilbiktashev.aidadok.architecture.presentation_layer.authentication.enter.EnterErrorDialog;
 import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainActivity;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by User on 21.07.2017.
@@ -37,7 +46,14 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
     private EditText email;
     private EditText userName;
 
+    private Button registrationButton;
+
     private FirebaseAuth mAuth;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    public static final String EMAIL_VALIDATION_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     @Nullable
     @Override
@@ -45,13 +61,7 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
         View root = inflater.inflate(R.layout.fragment_registration, container, false);
         setHasOptionsMenu(true);
 
-        mAuth = FirebaseAuth.getInstance();
-
-        root.findViewById(R.id.registration_button).setOnClickListener(this);
-
-        email = (EditText) root.findViewById(R.id.email);
-        password = (EditText) root.findViewById(R.id.password);
-        userName = (EditText) root.findViewById(R.id.user_name);
+       initViews(root);
 
         setupToolBar(root);
 
@@ -67,6 +77,47 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
         actionBar.setTitle(R.string.registration);
     }
 
+    private void initViews(View root){
+        mAuth = FirebaseAuth.getInstance();
+
+        registrationButton = (Button) root.findViewById(R.id.registration_button);
+        registrationButton.setOnClickListener(this);
+
+        email = (EditText) root.findViewById(R.id.email);
+        password = (EditText) root.findViewById(R.id.password);
+        userName = (EditText) root.findViewById(R.id.user_name);
+
+        TextInputLayout tilEmail = (TextInputLayout) root.findViewById(R.id.til_email);
+        TextInputLayout tilPassword = (TextInputLayout) root.findViewById(R.id.til_password);
+
+        compositeDisposable.add(RxTextView.textChanges(email).skipInitialValue()
+                .doOnNext(charSequence -> {
+            if(isMailCorrect(charSequence)){
+
+                tilEmail.setError(null);
+                tilEmail.setErrorEnabled(false);
+                tryEnableRegistrationButton();
+            }else {
+                registrationButton.setEnabled(false);
+                tilEmail.setError("Неверный e-mail");
+            }
+        }).subscribe());
+
+        compositeDisposable.add(RxTextView.textChanges(password).skipInitialValue()
+                .doOnNext(charSequence -> {
+                    if(isPasswordCorrect(charSequence)){
+
+                        tilPassword.setError(null);
+                        tilPassword.setErrorEnabled(false);
+                        tryEnableRegistrationButton();
+                    }else {
+                        registrationButton.setEnabled(false);
+                        tilPassword.setError("Пароль должен быть длиннее 6ти символов");
+                    }
+                }).subscribe());
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -76,6 +127,24 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public boolean isMailCorrect(CharSequence email) {
+        String emailS = email.toString();
+        String regEx = EMAIL_VALIDATION_REGEX;
+        return emailS.matches(regEx);
+    }
+
+    public boolean isPasswordCorrect(CharSequence password) {
+        return password.length() > 5;
+    }
+
+    public void tryEnableRegistrationButton(){
+        if(email.getText().length() > 0 && password.getText().length() > 0 ){
+            if(isMailCorrect(email.getText().toString()) && isPasswordCorrect(password.getText().toString())){
+                registrationButton.setEnabled(true);
+            }else registrationButton.setEnabled(false);
+        }else registrationButton.setEnabled(false);
     }
 
 
@@ -107,6 +176,7 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
         });
     }
 
+//    в этом методе прописать пользователя в storage
     private void setupUserProfile(String userName){
         Log.d(TAG, "setupUserProfile: userName=" + userName);
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -127,5 +197,11 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.dispose();
     }
 }
