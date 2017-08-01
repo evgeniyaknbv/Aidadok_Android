@@ -3,7 +3,6 @@ package danilbiktashev.aidadok.architecture.presentation_layer.splash_screen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -16,6 +15,7 @@ import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainA
 
 /**
  * Created by User on 16.07.2017.
+ *
  */
 
 public class SplashScreen extends AppCompatActivity {

@@ -1,7 +1,6 @@
 package danilbiktashev.aidadok.architecture.presentation_layer.authentication.registration;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -16,26 +15,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
-import java.util.concurrent.TimeUnit;
 
 import danilbiktashev.aidadok.R;
 import danilbiktashev.aidadok.architecture.presentation_layer.authentication.enter.EnterErrorDialog;
 import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainActivity;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
+
+import static danilbiktashev.aidadok.architecture.presentation_layer.authentication.AuthenticationUtils.EMAIL_VALIDATION_REGEX;
 
 /**
  * Created by User on 21.07.2017.
+ *
  */
 
 public class RegistrationFragment extends Fragment   implements View.OnClickListener{
@@ -51,9 +47,6 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
     private FirebaseAuth mAuth;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
-    public static final String EMAIL_VALIDATION_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     @Nullable
     @Override
@@ -72,9 +65,12 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
         Toolbar toolbar = (Toolbar) root.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.registration);
+
+        if(actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.registration);
+        }
     }
 
     private void initViews(View root){
@@ -131,8 +127,7 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
 
     public boolean isMailCorrect(CharSequence email) {
         String emailS = email.toString();
-        String regEx = EMAIL_VALIDATION_REGEX;
-        return emailS.matches(regEx);
+        return emailS.matches(EMAIL_VALIDATION_REGEX);
     }
 
     public boolean isPasswordCorrect(CharSequence password) {
@@ -170,7 +165,12 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
 //                    изменяе профиль, записываем имя пользователя
                setupUserProfile(userName.getText().toString());
             }else {
-               task.getException().printStackTrace();
+               String errorMsg = task.getException().getMessage();
+                Log.d(TAG, "createAccount: " + errorMsg);
+                if(errorMsg.contains("The email address is already in use by another account.")){
+                    EnterErrorDialog.newInstance("Данный e-mail уже используется в другом аккаунте")
+                            .show(getFragmentManager(), "EnterErrorDialog");
+                }
 
             }
         });
@@ -179,6 +179,10 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
 //    в этом методе прописать пользователя в storage
     private void setupUserProfile(String userName){
         Log.d(TAG, "setupUserProfile: userName=" + userName);
+        Log.d(TAG, "setupUserProfile: useruid=" + mAuth.getCurrentUser().getUid());
+
+        writeUserToStorage(userName, email.getText().toString());
+
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName)
                 .build();
@@ -187,16 +191,42 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
             mAuth.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(task1 -> {
                 if(task1.isSuccessful()){
                     Log.d(TAG, "setupUserProfile: userName = " + mAuth.getCurrentUser().getDisplayName());
-                    Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    openNewsActivity();
                 }else {
                     task1.getException().printStackTrace();
-                    EnterErrorDialog errorDialog = EnterErrorDialog.newInstance("Проверте подключение к интернету");
-                    errorDialog.show(getFragmentManager(), "EnterErrorDialog");
+                    EnterErrorDialog.newInstance("Проверте подключение к интернету")
+                            .show(getFragmentManager(), "EnterErrorDialog");
                 }
             });
         }
+    }
+
+    private void openNewsActivity(){
+        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    private void writeUserToStorage(String userName, String email){
+
+        DatabaseReference.CompletionListener completionListener = (databaseError, databaseReference) -> {
+
+            if(databaseError != null) {
+                Log.d(TAG, "writeUserToStorage: " + databaseError.getMessage());
+                Log.d(TAG, "writeUserToStorage: " + databaseError.getCode());
+                Log.d(TAG, "writeUserToStorage: " + databaseError.getDetails());
+
+            }else {
+                Log.d(TAG, "writeUserToStorage: SUCCESS");
+            }
+
+        };
+
+        DatabaseReference usersReference = FirebaseDatabase.getInstance().getReference().child("ПОЛЬЗОВАТЕЛИ");
+        DatabaseReference userUID = usersReference.child(mAuth.getCurrentUser().getUid());
+        userUID.child("email").setValue(email, completionListener);
+        userUID.child("имя_пользователя").setValue(userName, completionListener);
+        userUID.push();
     }
 
     @Override

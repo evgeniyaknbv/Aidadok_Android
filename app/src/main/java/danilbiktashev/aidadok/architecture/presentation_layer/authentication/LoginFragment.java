@@ -1,4 +1,5 @@
 package danilbiktashev.aidadok.architecture.presentation_layer.authentication;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import danilbiktashev.aidadok.R;
 import danilbiktashev.aidadok.architecture.presentation_layer.authentication.enter.EnterFragment;
 import danilbiktashev.aidadok.architecture.presentation_layer.authentication.registration.RegistrationFragment;
+import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainActivity;
 
 /**
  * Created by User on 21.07.2017.
@@ -44,20 +46,13 @@ public   class LoginFragment extends Fragment  implements View.OnClickListener {
                replaceFragment(new RegistrationFragment(), "RegistrationFragment", true);
                break;
            case R.id.continue_text:
-//               переместимя на активити с новостями без возвращения назад
-               /*
-               private void startLoginActivity(){
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-                */
+               openNewsActivity();
                break;
        }
     }
 
 
-    public void replaceFragment(Fragment fragment, String tag, boolean addTobackStack){
+    private void replaceFragment(Fragment fragment, String tag, boolean addTobackStack){
         FragmentTransaction ft = getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, fragment, tag);
@@ -65,6 +60,12 @@ public   class LoginFragment extends Fragment  implements View.OnClickListener {
         if(addTobackStack) ft.addToBackStack(null);
 
         ft.commit();
+    }
+
+    private void openNewsActivity(){
+        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
 }

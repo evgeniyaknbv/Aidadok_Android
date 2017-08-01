@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+app-debug.apk
+src/main/java/danilbiktashev/aidadok/architecture/business_layer/
+src/main/java/danilbiktashev/aidadok/architecture/data_layer/

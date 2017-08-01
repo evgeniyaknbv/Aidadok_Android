@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="danilbiktashev.aidadok">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -11,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".architecture.MyApplication">
 
         <!--splash screen-->
         <activity
@@ -52,10 +54,20 @@
             android:name=".CallDoctorActivity"
             android:label="@string/title_activity_call_doctor"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".EndOfSymptomActivity"
             android:label="@string/title_activity_end_of_symptom"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>
