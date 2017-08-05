@@ -14,7 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
+        android:padding="16dp"
         android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true">
 
@@ -58,7 +58,7 @@
             android:layout_marginLeft="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/darkBackground"
+            android:background="@drawable/botton_dark"
             android:text="@string/enter"
             android:textStyle="bold"
             android:textSize="18dp"

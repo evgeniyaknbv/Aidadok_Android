@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 
 /**
  * Created by User on 22.07.2017.
@@ -33,5 +34,10 @@ public class EnterErrorDialog extends DialogFragment   {
         if(getArguments()!= null){
             return getArguments().getString("message");
         }else return "ошибка";
+    }
+
+    public static void showErrorDialog(String msg, FragmentManager fragmentManager){
+        EnterErrorDialog errorDialog = EnterErrorDialog.newInstance(msg);
+        errorDialog.show(fragmentManager, "EnterErrorDialog");
     }
 }

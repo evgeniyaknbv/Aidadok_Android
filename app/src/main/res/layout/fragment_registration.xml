@@ -100,7 +100,7 @@
             android:layout_marginLeft="32dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/darkBackground"
+            android:background="@drawable/botton_dark"
             android:text="@string/registration"
             android:textStyle="bold"
             android:textSize="18dp"

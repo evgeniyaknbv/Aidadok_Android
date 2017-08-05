@@ -1,10 +1,8 @@
 package danilbiktashev.aidadok.architecture.presentation_layer.authentication.enter;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,27 +18,19 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.LoginBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import danilbiktashev.aidadok.R;
-import danilbiktashev.aidadok.architecture.presentation_layer.authentication.LoginActivity;
 import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainActivity;
 
 /**
@@ -55,7 +45,6 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
     private EditText email;
 
     private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager callbackManager;
 
     @Override
@@ -63,22 +52,11 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = firebaseAuth -> {
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user != null) {
-                // User is signed in
-                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-            } else {
-                // User is signed out
-                Log.d(TAG, "onAuthStateChanged:signed_out");
-            }
-        };
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Nullable
@@ -146,11 +124,8 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     openNewsActivity();
-
                 } else {
-                    task.getException().printStackTrace();
-                    EnterErrorDialog errorDialog = EnterErrorDialog.newInstance("Неверно введен e-mail или пароль");
-                    errorDialog.show(getFragmentManager(), "EnterErrorDialog");
+                    errorHandling(task.getException().getMessage());
                 }
             });
         }else {
@@ -160,27 +135,25 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
 
     }
 
-    private void openNewsActivity(){
-        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+    private void sendResetPasswordEmail(){
+        SendResetPasswordDialog.showSendEmailDialog(getFragmentManager(),
+                email1 -> {
+                    Log.d(TAG, "onSendMessage: " + email1);
+                    firebaseSendResetPasswordEmail(email1);
+                });
     }
 
-    private void sendResetPasswordEmail(){
-        SendResetPasswordDialog dialog = new SendResetPasswordDialog();
-        dialog.setListener(new SendResetPasswordDialog.ISendResetPasswordListener() {
-            @Override
-            public void onSendMessage(String email) {
-                Log.d(TAG, "onSendMessage: " + email);
-            }
+    private void firebaseSendResetPasswordEmail(String email){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
-            @Override
-            public void onCancel() {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show(getFragmentManager(), "SendResetPasswordDialog");
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getContext(), "письмо отправлено", Toast.LENGTH_SHORT).show();
+                    }else {
+                        errorHandling(task.getException().getMessage());
+                    }
+                });
     }
 
     private void signInFacebook(){
@@ -204,6 +177,7 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
             public void onError(FacebookException error) {
                 Log.d(TAG, "onError: " + error.getMessage());
                 error.printStackTrace();
+                errorHandling(error.getMessage());
             }
         });
 
@@ -239,6 +213,22 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
         });
     }
 
+    private void errorHandling(String errorMsg){
+        Log.d(TAG, "errorHandling: " + errorMsg);
+
+        errorMsg = errorMsg.toLowerCase();
+
+        if(errorMsg.contains("there is no user record corresponding to this identifier")){
+            EnterErrorDialog.showErrorDialog(getString(R.string.no_user_with_such_email), getFragmentManager());
+
+        }else if(errorMsg.contains("network")){
+            EnterErrorDialog.showErrorDialog(getString(R.string.verify_internet_connection), getFragmentManager());
+
+        }else if(errorMsg.contains("the email address is badly formatted")){
+            EnterErrorDialog.showErrorDialog(getString(R.string.passwor_email_incorrect), getFragmentManager());
+        }
+    }
+
     private void writeUserToStorage(String userName, String email, String uid){
 
         DatabaseReference.CompletionListener completionListener = (databaseError, databaseReference) -> {
@@ -263,6 +253,12 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
         userUID.push();
     }
 
+    private void openNewsActivity(){
+        Intent intent = new Intent(getActivity().getApplicationContext(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(TAG, "onActivityResult: ");
@@ -273,8 +269,5 @@ public class EnterFragment extends Fragment   implements View.OnClickListener{
     @Override
     public void onStop() {
         super.onStop();
-        if (mAuthListener != null) {
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }
 }

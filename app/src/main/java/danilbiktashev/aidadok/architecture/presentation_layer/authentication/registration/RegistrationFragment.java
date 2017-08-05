@@ -165,13 +165,14 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
 //                    изменяе профиль, записываем имя пользователя
                setupUserProfile(userName.getText().toString());
             }else {
-               String errorMsg = task.getException().getMessage();
+                String errorMsg = task.getException().getMessage();
                 Log.d(TAG, "createAccount: " + errorMsg);
-                if(errorMsg.contains("The email address is already in use by another account.")){
-                    EnterErrorDialog.newInstance("Данный e-mail уже используется в другом аккаунте")
-                            .show(getFragmentManager(), "EnterErrorDialog");
-                }
 
+                if(errorMsg.contains("The email address is already in use by another account.")){
+                    EnterErrorDialog.showErrorDialog(getString(R.string.email_is_already_used), getFragmentManager());
+                }else if(errorMsg.contains("Network Error")){
+                    EnterErrorDialog.showErrorDialog(getString(R.string.verify_internet_connection), getFragmentManager());
+                }
             }
         });
     }
@@ -194,8 +195,7 @@ public class RegistrationFragment extends Fragment   implements View.OnClickList
                     openNewsActivity();
                 }else {
                     task1.getException().printStackTrace();
-                    EnterErrorDialog.newInstance("Проверте подключение к интернету")
-                            .show(getFragmentManager(), "EnterErrorDialog");
+                    EnterErrorDialog.showErrorDialog(getString(R.string.verify_internet_connection), getFragmentManager());
                 }
             });
         }

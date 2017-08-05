@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
+import danilbiktashev.aidadok.R;
 import danilbiktashev.aidadok.architecture.presentation_layer.authentication.LoginActivity;
 import danilbiktashev.aidadok.architecture.presentation_layer.main_content.MainActivity;
 
@@ -24,10 +25,15 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+//        задержка, чтобы по-лучше смотрелось , без морганий
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         FirebaseAuth.getInstance().signOut();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user != null){
-            Log.d(TAG, "onCreate: user != null" );
             Log.d(TAG, "onCreate: user uid=" + user.getUid());
             Log.d(TAG, "onCreate: userName=" + user.getDisplayName());
             startActivity(MainActivity.class);
@@ -40,8 +46,8 @@ public class SplashScreen extends AppCompatActivity {
 
     private void startActivity(Class<?> activity){
         Intent intent = new Intent(getApplicationContext(), activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finish();
     }
 
 
